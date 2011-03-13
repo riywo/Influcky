@@ -11,7 +11,7 @@ INSTALLATION
 USAGE
 
     % vi config/development.pl
-    % infra_mysql.pl -e "show databases"
+    % infra_mysql -e "show databases"
 
 SEE ALSO
 
