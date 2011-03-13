@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use FindBin;
 use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/../extlib/lib/perl5";
 use Getopt::Long qw(:config pass_through no_ignore_case no_auto_abbrev);
 use Pod::Usage;
 use Infra::MySQL;

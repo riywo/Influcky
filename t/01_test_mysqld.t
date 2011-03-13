@@ -49,6 +49,14 @@ note( explain( $dbh_slave->selectall_arrayref(q|SELECT * FROM test|) ) );
 
 is($dbh_slave->selectrow_arrayref(q|select time from test|)->[0], $time, 'chech slave data is same to master');
 
+$dbh_master->disconnect or die($dbh_master->errstr);
+$dbh_slave->disconnect or die($dbh_slave->errstr);
+
+$dbh_master = DBI->connect($mysqld->dsn, 'root', '',
+    +{ RaiseError => 1, AutoCommit => 0, });
+$dbh_slave = DBI->connect($mysqld_slave->dsn, 'root', '',
+    +{ RaiseError => 1, AutoCommit => 1, });
+
 Test::Infra::mysqld->cleanup($mysqld);
 note( explain( $dbh_master->selectall_arrayref(q|show databases like 'replication'|)));
 is(scalar @{$dbh_master->selectall_arrayref(q|show databases like 'replication'|)}, 0, 'master cleaned up');

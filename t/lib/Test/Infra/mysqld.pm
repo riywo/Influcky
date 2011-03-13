@@ -15,6 +15,18 @@ our $SKIP_DROP_DB_MAP = {
 my $tempfile = File::Spec->catfile(File::Spec->tmpdir, 'test_mysqld.json');
 my $tempfile_slave = File::Spec->catfile(File::Spec->tmpdir, 'test_mysqld_slave.json');
 
+my %CONFIG = (
+    'key-buffer-size'                 => '100K',
+    'innodb-buffer-pool-size'         => '5M',
+    'innodb-log-buffer-size'          => '256K',
+    'innodb-additional-mem-pool-size' => '512K',
+    'sort-buffer-size'                => '100K',
+    'myisam-sort-buffer-size'         => '100K',
+    'innodb_use_native_aio' => 0,
+    'slow-query-log' => 1,
+    'long-query-time' => 0,
+);
+
 sub setup {
     my ($class, %config) = @_;
 
@@ -34,6 +46,7 @@ sub setup {
             'log-bin' => 'mysql-bin',
             'server-id' => 1,
             'replicate-ignore-db' => 'mysql',
+            %CONFIG,
             %config,
         }) or die $Test::mysqld::errstr;
 
@@ -72,6 +85,7 @@ sub setup_slave {
         $mysqld = Test::mysqld->new(my_cnf => {
             'port'      => empty_port(),
             'server-id' => 2,
+            %CONFIG,
             %config,
         }) or die $Test::mysqld::errstr;
 

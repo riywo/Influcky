@@ -7,12 +7,14 @@ requires 'JSON';
 requires 'Furl';
 requires 'Web::Scraper';
 requires 'Parallel::ForkManager';
+requires 'Capture::Tiny';
+requires 'File::chdir';
 
 tests 't/*.t';
 author_tests 'xt';
 
 default_test_target(
-    includes       => ['t/lib'],
+    includes       => ['t/lib','extlib/lib/perl5'],
     run_on_prepare => ['t/script/setup_mysqld.pl'],
 );
 
