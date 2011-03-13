@@ -9,7 +9,7 @@ my $mysqld = Test::Infra::mysqld->setup() or die $Test::mysqld::errstr;
 note $mysqld->dsn;
 note "setup mysqld slave...";
 my $mysqld_slave = Test::Infra::mysqld->setup_slave($mysqld) or die $Test::mysqld::errstr;
-note $mysqld->dsn;
+note $mysqld_slave->dsn;
 
 is(
     $mysqld->dsn,
