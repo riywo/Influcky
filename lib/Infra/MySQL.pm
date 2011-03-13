@@ -4,6 +4,9 @@ use warnings;
 use FindBin;
 use Class::Accessor::Lite;
 use File::Temp qw(tempfile tempdir);
+use JSON;
+use Capture::Tiny qw(capture);
+use Carp;
 
 use Infra::Config;
 use Infra::Log;
@@ -12,8 +15,8 @@ my %Defaults = (
     'config' => Infra::Config->load->{'MySQL'},
     'db' => '',
     'opt' => '',
-    'host' => '127.0.0.1',
-    'port' => '3306',
+    'host' => 'localhost',
+    'port' => 3306,
     'dir' => undef,
 );
 Class::Accessor::Lite->mk_accessors(keys %Defaults);
@@ -29,6 +32,8 @@ sub new {
         $self->dir(tempdir(CLEANUP => 1));
     }
 
+    Infra::Log->debug(encode_json +{%{$self}});
+
     $self;
 }
 
@@ -39,11 +44,23 @@ sub mysql {
     print $fh $sql;
     close $fh;
 
-    my $db = $arg{'db'} ? $arg{'db'} : $self->db;
+    my $db = $arg{'db'} || $self->db;
     my $opt = $self->_make_opt($arg{'opt'});
 
-    my $ret = `cat $fname | mysql $opt $db`;
-    return $ret;
+    my $CMD = "cat $fname | mysql $opt $db";
+    Infra::Log->debug($CMD);
+    my $ret;
+    my (undef, $stderr) = capture {
+        $ret = `$CMD`;
+    };
+    if ($? != 0) {
+        chomp $stderr;
+        Infra::Log->error($stderr);
+        croak "exec mysql command failed";
+    }
+    else {
+        return $ret;
+    }
 }
 
 sub mysqldump_ddl {
@@ -62,13 +79,8 @@ sub _make_opt {
     my $opt = $self->opt;
     $opt .= " -u".$self->config->{'user'};
     $opt .= " -p".$self->config->{'password'} if($self->config->{'password'} and $self->config->{'password'} ne '');
-    if ($self->config->{'socket'}) {
-        $opt .= " --socket=".$self->config->{'socket'};
-    }
-    else {
-        $opt .= " -h".$self->host;
-        $opt .= " --port=".$self->port;
-    }
+    $opt .= " -h".$self->host;
+    $opt .= " --port=".$self->port;
     $opt .= " $arg" if ($arg);
 
     return $opt;

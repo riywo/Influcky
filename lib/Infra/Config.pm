@@ -6,9 +6,7 @@ use File::chdir;
 
 sub load {
     my $self = shift;
-    my %conf = @_ == 1 ? %{$_[0]} : @_;
-
-    my $env = $conf{environment} || 'development';
+    my $env = $ENV{INFRA_CONFIG} || 'development';
     my $fname = File::Spec->catfile(_base_dir($self), 'config', "${env}.pl");
     my $config = do $fname or die "Cannot load configuration file: $fname";
     return $config;

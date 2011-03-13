@@ -29,8 +29,10 @@ sub debug {
 sub _log {
     my ($class, $tag, $msg) = @_;
     my $time = time2iso(time);
+    my ($package, $fname, $line) = caller(1);
+    $package = $fname if ($package eq 'main');
 
-    printf "%s [%s] %s\n", $time, $tag, $msg;
+    printf "%s [%s] %s loged at %s line %s\n", $time, $tag, $msg, $package, $line;
 }
 
 1;

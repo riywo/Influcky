@@ -18,12 +18,14 @@ my $mysqld = Test::Infra::mysqld->setup;
 my $log = File::Spec->catfile($mysqld->{'base_dir'}, qw/tmp mysqld.log/);
 printf " started at %s\n", $mysqld->{'my_cnf'}{'socket'};
 print "log file: $log\n";
+print $mysqld->dsn."\n";
 
 print "Starting mysqld slave...";
 my $mysqld_slave = Test::Infra::mysqld->setup_slave($mysqld);
 my $log_slave = File::Spec->catfile($mysqld_slave->{'base_dir'}, qw/tmp mysqld.log/);
 printf " started at %s\n", $mysqld_slave->{'my_cnf'}{'socket'};
 print "log file: $log_slave\n";
+print $mysqld_slave->dsn."\n";
 
 {
     my $json = encode_json({ %$mysqld });
