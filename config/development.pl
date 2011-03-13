@@ -1,0 +1,6 @@
++{
+    'MySQL' => {
+        'user' => 'root',
+        'password' => '',
+    },
+}
