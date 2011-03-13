@@ -13,4 +13,8 @@ USAGE
     % vi config/development.pl
     % infra_mysql.pl -e "show databases"
 
+SEE ALSO
+
+    https://github.com/riywo/Infra/wiki
+
 riywo
