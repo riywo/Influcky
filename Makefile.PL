@@ -19,6 +19,8 @@ default_test_target(
 test_requires 'Test::More';
 test_requires 'Test::TCP';
 test_requires 'Test::mysqld';
+test_requires 'Data::Section::Simple';
+
 auto_set_repository;
 auto_include;
 WriteAll;

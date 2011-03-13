@@ -1,32 +1,52 @@
 package Infra::MySQL;
 use strict;
 use warnings;
-our $VERSION = '0.01';
+use FindBin;
+use Class::Accessor::Lite;
+use File::Temp qw(tempfile tempdir);
+
+use Infra::Config;
+
+my %Defaults = (
+    config => Infra::Config->load->{'MySQL'},
+    host => '127.0.0.1',
+    port => 3306,
+    opt => '',
+    dir => undef,
+);
+Class::Accessor::Lite->mk_accessors(keys %Defaults);
+
+sub new {
+    my $class = shift;
+    my $self = bless {
+        %Defaults,
+        @_ == 1 ? %{$_[0]} : @_,
+    }, $class;
+
+    if (!$self->dir) {
+        $self->dir(tempdir(CLEANUP => 1));
+    }
+
+    $self;
+}
+
+sub mysql {
+    my ($self, $sql, $db, $arg) = @_;
+    $db = '' unless $db;
+
+    my $opt = $self->opt;
+    $opt .= " -u".$self->config->{'user'};
+    $opt .= " -p".$self->config->{'password'} if($self->config->{'password'} and $self->config->{'password'} ne '');
+    $opt .= " -h".$self->host;
+    $opt .= " --port=".$self->port;
+    $opt .= " $arg" if($arg);
+
+    my ($fh, $fname) = tempfile(DIR => $self->dir, SUFFIX => '.sql');
+    print $fh $sql;
+    close $fh;
+
+    my $ret = `cat $fname | mysql $opt $db`;
+    return $ret;
+}
 
 1;
-__END__
-
-=head1 NAME
-
-Infra::MySQL -
-
-=head1 SYNOPSIS
-
-  use Infra::MySQL;
-
-=head1 DESCRIPTION
-
-Infra::MySQL is
-
-=head1 AUTHOR
-
-riywo E<lt>riywo.jp@gmail.comE<gt>
-
-=head1 SEE ALSO
-
-=head1 LICENSE
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
