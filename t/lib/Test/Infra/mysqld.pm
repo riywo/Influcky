@@ -22,7 +22,6 @@ my %CONFIG = (
     'innodb-additional-mem-pool-size' => '512K',
     'sort-buffer-size'                => '100K',
     'myisam-sort-buffer-size'         => '100K',
-    'innodb_use_native_aio' => 0,
     'slow-query-log' => 1,
     'long-query-time' => 0,
 );
