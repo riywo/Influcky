@@ -28,7 +28,7 @@ for my $tool (@{$res->{'mk-tool'}}) {
     my $pid = $pm->start and next;
     my $file = "$maatkit_dir/$tool->{'file'}";
     $pm->finish if(-f $file);
-    my $furl = Furl->new;
+    my $furl = Furl->new(timeout => 300);
     open my $fh, '>', $file or die $!;
     Infra::Log->info("download $tool->{'file'}...");
     $furl->request(
