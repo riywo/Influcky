@@ -2,7 +2,6 @@ package Test::Infra::mysqld;
 use strict;
 use warnings;
 use Test::mysqld;
-use Test::More;
 use Test::TCP;
 use JSON;
 use DBI;
@@ -87,12 +86,6 @@ q|CHANGE MASTER TO MASTER_HOST='%s', MASTER_PORT=%d, MASTER_USER='%s', MASTER_PA
             )
         );
         $dbh->do(q|START SLAVE|);
-
-        note(
-            explain(
-                $dbh->selectall_arrayref( 'SHOW SLAVE STATUS', +{ Slice => +{} } )
-            )
-        );
     }
 
     return $mysqld;
