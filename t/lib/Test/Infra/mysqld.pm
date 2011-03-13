@@ -114,7 +114,7 @@ sub cleanup {
     my $rs = $dbh->selectall_hashref('SHOW DATABASES', 'Database');
     for my $dbname (keys %$rs) {
         next if $SKIP_DROP_DB_MAP->{$dbname};
-        $dbh->do("DROP DATABASE $dbname");
+        $dbh->do("DROP DATABASE IF EXISTS $dbname");
     }
 }
 
