@@ -11,7 +11,7 @@ use URI;
 use Parallel::ForkManager;
 
 my $root_dir = "$FindBin::RealBin/../..";
-my $maatkit_dir = "$root_dir/script/maatkit";
+my $maatkit_dir = "$root_dir/script/tool";
 mkdir $maatkit_dir unless(-d $maatkit_dir);
 
 Infra::Log->info("scraping maatkit tool list");
@@ -42,8 +42,4 @@ for my $tool (@{$res->{'mk-tool'}}) {
 }
 
 $pm->wait_all_children;
-
-my $bashrc = '~/.bashrc';
-system("echo export PATH=$maatkit_dir:".'\$PATH >> ' . $bashrc)
-    unless(grep {$_ eq "$maatkit_dir"} split /:/, `source $bashrc; echo \$PATH`);
 

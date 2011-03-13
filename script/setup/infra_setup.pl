@@ -18,6 +18,8 @@ system("cd $root_dir; yes | $root_dir/extlib/bin/cpanm -v -L extlib Module::Inst
 system("cd $root_dir; yes | $root_dir/extlib/bin/cpanm -v -L extlib Module::Install::TestTarget");
 
 print "PATH...\n";
+system("echo export PATH=$root_dir/script/tool:".'\$PATH >> ' . $bashrc)
+    unless(grep {$_ eq "$root_dir/script/tool"} split /:/, `source $bashrc; echo \$PATH`);
 system("echo export PATH=$root_dir/script:".'\$PATH >> ' . $bashrc)
     unless(grep {$_ eq "$root_dir/script"} split /:/, `source $bashrc; echo \$PATH`);
 
@@ -27,4 +29,3 @@ system("cd $root_dir; $root_dir/extlib/bin/cpanm -v -L extlib --installdeps .");
 print "make test...\n";
 system("cd $root_dir; perl -Mlib=extlib/lib/perl5 Makefile.PL; make test; make clean");
 
-#system("cd $root_dir; perl $root_dir/script/setup/maatkit_setup.pl");

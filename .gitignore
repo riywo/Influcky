@@ -11,4 +11,4 @@ MANIFEST.bak
 *.sw[po]
 sandbox/
 extlib/
-script/maatkit/
+script/tool/
