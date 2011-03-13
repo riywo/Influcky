@@ -2,26 +2,15 @@ This is Perl module Infra.
 
 INSTALLATION
 
-Infra installation is straightforward. If your CPAN shell is set up,
-you should just be able to do
+    % git clone https://riywo@github.com/riywo/Infra.git
+    % cd Infra
+    % perl script/setup/infra_setup.pl
+    % perl script/setup/maatkit_setup.pl
+    % source ~/.bashrc
 
-    % cpan Infra
+USAGE
 
-Download it, unpack it, then build it as per the usual:
-
-    % perl Makefile.PL
-    % make && make test
-
-Then install it:
-
-    % make install
-
-DOCUMENTATION
-
-Infra documentation is available as in POD. So you can do:
-
-    % perldoc Infra
-
-to read the documentation online with your favorite pager.
+    % vi config/development.pl
+    % infra_mysql.pl -e "show databases"
 
 riywo
