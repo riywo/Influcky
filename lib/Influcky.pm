@@ -1,4 +1,4 @@
-package Infra;
+package Influcky;
 use strict;
 use warnings;
 our $VERSION = '0.01';
@@ -8,15 +8,15 @@ __END__
 
 =head1 NAME
 
-Infra -
+Influcky - Infinity lucky modules
 
 =head1 SYNOPSIS
 
-  use Infra;
+  use Influcy;
 
 =head1 DESCRIPTION
 
-Infra is
+Influcky is
 
 =head1 AUTHOR
 

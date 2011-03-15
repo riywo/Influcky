@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use FindBin;
 use lib "$FindBin::RealBin/../../lib";
-use Infra::Log;
 
 my $root_dir =  "$FindBin::RealBin/../..";
 my $bashrc = "~/.bashrc";

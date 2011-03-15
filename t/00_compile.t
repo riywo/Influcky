@@ -2,7 +2,7 @@ use strict;
 use Test::More tests => 3;
 
 BEGIN { 
-    use_ok 'Infra';
-    use_ok 'Infra::Log';
-    use_ok 'Infra::MySQL';
+    use_ok 'Influcky';
+    use_ok 'Influcky::Log';
+    use_ok 'Influcky::MySQL';
 }

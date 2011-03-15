@@ -1,4 +1,4 @@
-package Infra::Config;
+package Influcky::Config;
 use strict;
 use warnings;
 use File::Spec;

@@ -1,4 +1,4 @@
-package Infra::Log;
+package Influcky::Log;
 use strict;
 use warnings;
 use HTTP::Date qw(time2iso);

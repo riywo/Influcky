@@ -1,20 +1,20 @@
-This is Perl module Infra.
+This is Perl module Influcky.
 
 INSTALLATION
 
-    % git clone https://riywo@github.com/riywo/Infra.git
-    % cd Infra
-    % perl script/setup/infra_setup.pl
+    % git clone https://riywo@github.com/riywo/Influcky.git
+    % cd Influcky
+    % perl script/setup/influcky_setup.pl
     % perl script/setup/maatkit_setup.pl
     % source ~/.bashrc
 
 USAGE
 
     % vi config/development.pl
-    % infra_mysql -e "show databases"
+    % influcky_mysql -e "show databases"
 
 SEE ALSO
 
-    https://github.com/riywo/Infra/wiki
+    https://github.com/riywo/Influcky/wiki
 
 riywo

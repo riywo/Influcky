@@ -3,7 +3,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::RealBin/../../extlib/lib/perl5";
 use lib "$FindBin::RealBin/../../lib";
-use Infra::Log;
+use Influcky::Log;
 
 use Furl;
 use Web::Scraper;
@@ -14,7 +14,7 @@ my $root_dir = "$FindBin::RealBin/../..";
 my $maatkit_dir = "$root_dir/script/tool";
 mkdir $maatkit_dir unless(-d $maatkit_dir);
 
-Infra::Log->info("scraping maatkit tool list");
+Influcky::Log->info("scraping maatkit tool list");
 my $res = scraper {
     process '#wrapper ul li a', 'mk-tool[]' => {
         url => '@href',
@@ -30,7 +30,7 @@ for my $tool (@{$res->{'mk-tool'}}) {
     $pm->finish if(-f $file);
     my $furl = Furl->new(timeout => 300);
     open my $fh, '>', $file or die $!;
-    Infra::Log->info("download $tool->{'file'}...");
+    Influcky::Log->info("download $tool->{'file'}...");
     $furl->request(
         method => 'GET',
         url => $tool->{'url'},

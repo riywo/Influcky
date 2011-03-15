@@ -1,14 +1,14 @@
 use FindBin;
 use lib "$FindBin::RealBin/lib";
 use lib "$FindBin::RealBin/../lib";
-use Test::Infra::mysqld;
+use Test::Influcky::mysqld;
 use Test::More;
 
 note "setup mysqld...";
-my $mysqld = Test::Infra::mysqld->setup() or die $Test::mysqld::errstr;
+my $mysqld = Test::Influcky::mysqld->setup() or die $Test::mysqld::errstr;
 note $mysqld->dsn;
 note "setup mysqld slave...";
-my $mysqld_slave = Test::Infra::mysqld->setup_slave($mysqld) or die $Test::mysqld::errstr;
+my $mysqld_slave = Test::Influcky::mysqld->setup_slave($mysqld) or die $Test::mysqld::errstr;
 note $mysqld_slave->dsn;
 
 is(
@@ -57,7 +57,7 @@ $dbh_master = DBI->connect($mysqld->dsn, 'root', '',
 $dbh_slave = DBI->connect($mysqld_slave->dsn, 'root', '',
     +{ RaiseError => 1, AutoCommit => 1, });
 
-Test::Infra::mysqld->cleanup($mysqld);
+Test::Influcky::mysqld->cleanup($mysqld);
 note( explain( $dbh_master->selectall_arrayref(q|show databases like 'replication'|)));
 is(scalar @{$dbh_master->selectall_arrayref(q|show databases like 'replication'|)}, 0, 'master cleaned up');
 sleep 1;

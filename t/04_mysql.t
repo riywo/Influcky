@@ -1,22 +1,22 @@
 use FindBin;
 use lib "$FindBin::RealBin/lib";
 use lib "$FindBin::RealBin/../lib";
-use Test::Infra::mysqld;
+use Test::Influcky::mysqld;
 use Test::More;
 use Data::Section::Simple qw(get_data_section);
 
-use Infra::MySQL;
+use Influcky::MySQL;
 use Data::Dumper;
 
 note "setup mysqld...";
-my $mysqld = Test::Infra::mysqld->setup() or die $Test::mysqld::errstr;
+my $mysqld = Test::Influcky::mysqld->setup() or die $Test::mysqld::errstr;
 note $mysqld->dsn;
-Test::Infra::mysqld->cleanup($mysqld);
+Test::Influcky::mysqld->cleanup($mysqld);
 
 $mysqld->dsn =~ /host=([^;]+)/; my $host = $1;
 $mysqld->dsn =~ /port=([^;]+)/; my $port = $1;
 
-my $mysql = Infra::MySQL->new(
+my $mysql = Influcky::MySQL->new(
     config => {
         user => 'root',
         password => '',
@@ -47,7 +47,7 @@ is(
 );
 
 
-Test::Infra::mysqld->cleanup($mysqld);
+Test::Influcky::mysqld->cleanup($mysqld);
 done_testing;
 
 #-----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-package Test::Infra::mysqld;
+package Test::Influcky::mysqld;
 use strict;
 use warnings;
 use Test::mysqld;

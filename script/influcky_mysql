@@ -6,8 +6,8 @@ use lib "$FindBin::RealBin/../lib";
 use lib "$FindBin::RealBin/../extlib/lib/perl5";
 use Getopt::Long qw(:config pass_through no_ignore_case no_auto_abbrev);
 use Pod::Usage;
-use Infra::MySQL;
-use Infra::Log;
+use Influcky::MySQL;
+use Influcky::Log;
 
 #$ENV{INFRA_DEBUG} = 1;
 my $help;
@@ -28,13 +28,13 @@ my %arg = ();
 $arg{'host'} = $host if $host;
 $arg{'port'} = $port if $port;
 
-my $mysql = Infra::MySQL->new(%arg);
+my $mysql = Influcky::MySQL->new(%arg);
 eval{
     print $mysql->mysql($sql, 'opt' => $opt);
 };
 if($@){
     chomp $@;
-    Infra::Log->error($@);
+    Influcky::Log->error($@);
     exit 1;
 }
 exit 0;
@@ -42,11 +42,11 @@ exit 0;
 __END__
 =head1 NAME
 
-Infra::MySQL CLI tool
+Influcky::MySQL CLI tool
 
 =head1 SYNOPSIS
 
-infra_mysql.pl [options]
+influcky_mysql.pl [options]
 
   Options:
     *This command can be used the same options as mysql client*
@@ -57,7 +57,7 @@ infra_mysql.pl [options]
     -?, --help    show this help
 
   more options are passed to mysql client.
-  config file is $BASE_DIR/config/$ENV{INFRA_CONFIG}.pl. default is "development.pl".
-  you can set it "INFRA_CONFIG=production infra_mysql.pl", ~/.bashrc or etc.
+  config file is $BASE_DIR/config/$ENV{INFLUCKY_CONFIG}.pl. default is "development.pl".
+  you can set it "INFLUCKY_CONFIG=production influcky_mysql.pl", ~/.bashrc or etc.
 
 =cut

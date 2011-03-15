@@ -1,8 +1,8 @@
 use FindBin;
 use lib "$FindBin::RealBin/extlib/lib/perl5";
 use inc::Module::Install;
-name 'Infra';
-all_from 'lib/Infra.pm';
+name 'Influcky';
+all_from 'lib/Influcky.pm';
 
 requires 'DBI';
 requires 'JSON';

@@ -1,4 +1,4 @@
-package Infra::MySQL;
+package Influcky::MySQL;
 use strict;
 use warnings;
 use FindBin;
@@ -8,11 +8,11 @@ use JSON;
 use Capture::Tiny qw(capture);
 use Carp;
 
-use Infra::Config;
-use Infra::Log;
+use Influcky::Config;
+use Influcky::Log;
 
 my %Defaults = (
-    'config' => Infra::Config->load->{'MySQL'},
+    'config' => Influcky::Config->load->{'MySQL'},
     'db' => '',
     'opt' => '',
     'host' => 'localhost',
@@ -32,7 +32,7 @@ sub new {
         $self->dir(tempdir(CLEANUP => 1));
     }
 
-    Infra::Log->debug(encode_json +{%{$self}});
+    Influcky::Log->debug(encode_json +{%{$self}});
 
     $self;
 }
@@ -48,14 +48,14 @@ sub mysql {
     my $opt = $self->_make_opt($arg{'opt'});
 
     my $CMD = "cat $fname | mysql $opt $db";
-    Infra::Log->debug($CMD);
+    Influcky::Log->debug($CMD);
     my $ret;
     my (undef, $stderr) = capture {
         $ret = `$CMD`;
     };
     if ($? != 0) {
         chomp $stderr;
-        Infra::Log->error($stderr);
+        Influcky::Log->error($stderr);
         croak "exec mysql command failed";
     }
     else {
