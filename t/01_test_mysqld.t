@@ -1,6 +1,7 @@
 use FindBin;
 use lib "$FindBin::RealBin/lib";
 use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/../extlib/lib/perl5";
 use Test::Influcky::mysqld;
 use Test::More;
 

@@ -1,6 +1,7 @@
 use FindBin;
 use lib "$FindBin::RealBin/lib";
 use lib "$FindBin::RealBin/../lib";
+use lib "$FindBin::RealBin/../extlib/lib/perl5";
 use Test::More;
 use Capture::Tiny qw(capture);
 use Influcky::Log;
