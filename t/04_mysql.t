@@ -1,3 +1,6 @@
+use strict;
+use warnings;
+
 use FindBin;
 use lib "$FindBin::RealBin/lib";
 use lib "$FindBin::RealBin/../lib";
@@ -35,18 +38,16 @@ note explain $mysql->mysql($ddl);
 
 my $sql = get_data_section('insert.sql');
 $mysql->db($DB);
-for my $i (1..100) {
+for my $i (1..10) {
     (my $sql_temp = $sql) =~ s/<% TABLE %>/$TABLE/g;
     my $str = _get_rand_str(20);
     $sql_temp =~ s/<% DATA %>/$str/g;
-    $mysql->mysql($sql_temp);
+    note explain $mysql->mysql($sql_temp);
 }
 
-is(
-    $mysql->mysql("select count(*) from $TABLE", 'db' => $DB, 'opt' => "--skip-column-name"),
-    "100\n", "count"
-);
-
+my $ret = $mysql->mysql("select count(*) from $TABLE", 'opt' => ["--skip-column-name"]);
+note $ret;
+is($ret, "10\n", "count");
 
 Test::Influcky::mysqld->cleanup($mysqld);
 done_testing;

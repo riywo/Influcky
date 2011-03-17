@@ -1,9 +1,7 @@
 package Influcky::MySQL;
 use strict;
 use warnings;
-use FindBin;
 use Class::Accessor::Lite;
-use File::Temp qw(tempfile tempdir);
 use JSON;
 use Capture::Tiny qw(capture);
 use Carp;
@@ -14,10 +12,9 @@ use Influcky::Log;
 my %Defaults = (
     'config' => Influcky::Config->load->{'MySQL'},
     'db' => '',
-    'opt' => '',
+    'opt' => ['--unbuffered'],
     'host' => 'localhost',
     'port' => 3306,
-    'dir' => undef,
 );
 Class::Accessor::Lite->mk_accessors(keys %Defaults);
 
@@ -28,38 +25,71 @@ sub new {
         @_ == 1 ? %{$_[0]} : @_,
     }, $class;
 
-    if (!$self->dir) {
-        $self->dir(tempdir(CLEANUP => 1));
-    }
-
     Influcky::Log->debug(encode_json +{%{$self}});
 
     $self;
 }
 
+sub mysql_fork {
+    my ($self, $sql, %arg) = @_;
+
+    my ($parent_in, $parent_out);
+    my ($child_in, $child_out);
+    pipe $parent_out, $child_in;
+    pipe $child_out, $parent_in;
+    $parent_in->autoflush(1);
+    $child_in->autoflush(1);
+
+    my $ret = '';
+    if (my $pid = fork) {
+        close $parent_in; close $parent_out;
+
+        Influcky::Log->debug("sql: ".$sql);
+        print $child_in "$sql";
+        close $child_in;
+
+        while (my $line = <$child_out>) {
+            $ret .= $line;
+        }
+        close $child_out;
+
+        waitpid($pid,0);
+    } else {
+        die "cannot fork: $!" unless defined $pid;
+        close $child_in; close $child_out;
+
+        open STDOUT, '>&', $parent_in;
+        open STDIN, '<&', $parent_out;
+
+        my $db = $arg{'db'} || $self->db;
+        my $opt = $self->_make_opt($arg{'opt'});
+        push @{$opt}, $db;
+
+        exec { "mysql" } @{$opt};
+    }
+
+    return $ret;
+}
+
 sub mysql {
     my ($self, $sql, %arg) = @_;
 
-    my ($fh, $fname) = tempfile(DIR => $self->dir, SUFFIX => '.sql');
-    print $fh $sql;
-    close $fh;
-
     my $db = $arg{'db'} || $self->db;
     my $opt = $self->_make_opt($arg{'opt'});
-
-    my $CMD = "cat $fname | mysql $opt $db";
-    Influcky::Log->debug($CMD);
-    my $ret;
-    my (undef, $stderr) = capture {
-        $ret = `$CMD`;
+    my $CMD = "mysql " . join(" ", (@{$opt}, $db));
+    Influcky::Log->debug("command: ".$CMD);
+    Influcky::Log->debug("sql: ".$sql);
+    my ($stdout, $stderr) = capture {
+        open my $fh, "| $CMD";
+        print $fh "$sql";
     };
-    if ($? != 0) {
+    if ($stderr) {
         chomp $stderr;
         Influcky::Log->error($stderr);
         croak "exec mysql command failed";
     }
     else {
-        return $ret;
+        return $stdout;
     }
 }
 
@@ -76,14 +106,14 @@ sub mysqldump_data {
 sub _make_opt {
     my ($self, $arg) = @_;
 
-    my $opt = $self->opt;
-    $opt .= " -u".$self->config->{'user'};
-    $opt .= " -p".$self->config->{'password'} if($self->config->{'password'} and $self->config->{'password'} ne '');
-    $opt .= " -h".$self->host;
-    $opt .= " --port=".$self->port;
-    $opt .= " $arg" if ($arg);
+    my @opt = @{$self->opt};
+    push @opt, "-u".$self->config->{'user'};
+    push @opt, "-p".$self->config->{'password'} if($self->config->{'password'} and $self->config->{'password'} ne '');
+    push @opt, "-h".$self->host;
+    push @opt, "--port=".$self->port;
+    push @opt, @{$arg} if ($arg);
 
-    return $opt;
+    return \@opt;
 }
 
 1;

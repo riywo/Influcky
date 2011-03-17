@@ -20,7 +20,7 @@ sub info {
 
 sub debug {
     my $class = shift;
-    return unless $ENV{INFRA_DEBUG};
+    return unless $ENV{INFLUCKY_DEBUG};
     $class->_log('DEBUG',@_);
 }
 
@@ -28,6 +28,7 @@ sub debug {
 
 sub _log {
     my ($class, $tag, $msg) = @_;
+    chomp $msg;
     my $time = time2iso(time);
     my ($package, $fname, $line) = caller(1);
     $package = $fname if ($package eq 'main');

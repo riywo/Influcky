@@ -1,3 +1,6 @@
+use strict;
+use warnings;
+
 use FindBin;
 use lib "$FindBin::RealBin/lib";
 use lib "$FindBin::RealBin/../lib";
@@ -6,7 +9,7 @@ use Test::More;
 use Capture::Tiny qw(capture);
 use Influcky::Log;
 
-$ENV{INFRA_DEBUG} = 1;
+$ENV{INFLUCKY_DEBUG} = 1;
 
 my $stdout;
 ($stdout, undef) = capture { Influcky::Log->debug("debug test"); };
